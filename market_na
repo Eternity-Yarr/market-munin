@@ -89,7 +89,7 @@ fi
 
 # Actual work
 
-  echo "notav.value "`grep -E 'offer(.*)available="(false|False|FALSE)' ${YML} | wc -l`
+  echo "notav.value "`grep -i -E 'offer(.*)available="false' ${YML} | wc -l`
 
 
 

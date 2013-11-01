@@ -84,9 +84,6 @@ if [ "$1" = "config" ]; then
 
   # Thickness
   echo 'total.draw LINE2'
-  echo 'notav.draw LINE2'
-
-  
 
   print_warning total
   print_critical total
@@ -104,11 +101,11 @@ fi
 # Actual work
 
 
-  echo "total.value "`grep -E '\<offer>' ${YML} | wc -l`
+  echo "total.value "`grep -i -E '\<offer>' ${YML} | wc -l`
 
-  echo "avail.value "`grep -E 'offer(.*)available="(true|True|TRUE)' ${YML} | wc -l`
+  echo "avail.value "`grep -i -E 'offer(.*)available="true' ${YML} | wc -l`
 
-  echo "picku.value "`grep -E 'pickup(.*)(true|True|TRUE)' ${YML} | wc -l`
+  echo "picku.value "`grep -i -E 'pickup(.*)true' ${YML} | wc -l`
 
 
 
