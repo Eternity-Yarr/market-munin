@@ -85,6 +85,10 @@ if [ "$1" = "config" ]; then
   echo 'notav.type GAUGE'
   echo 'picku.type GAUGE'
 
+  # Thickness
+  echo 'total.draw LINE2'
+  echo 'notav.draw LINE2'
+
   
 
   print_warning total
@@ -104,29 +108,16 @@ fi
 
 # Actual work
 
-if [ "$1" = "total" ]; then
 
   echo "total.value "`grep -E '\<offer>' ${YML} | wc -l`
-  exit 0
-fi
 
-if [ "$1" = "avail" ]; then
 
-  echo "total.value "`grep -E 'offer(.*)available="(true|True|TRUE)' ${YML} | wc -l`
-  exit 0
-fi
+  echo "avail.value "`grep -E 'offer(.*)available="(true|True|TRUE)' ${YML} | wc -l`
 
-if [ "$1" = "notav" ]; then
 
-  echo "total.value "`grep -E 'offer(.*)available="(false|False|FALSE)' ${YML} | wc -l`
-  exit 0
-fi
+  echo "notav.value "`grep -E 'offer(.*)available="(false|False|FALSE)' ${YML} | wc -l`
 
-if [ "$1" = "picku" ]; then
-
-  echo "total.value "`grep -E 'pickup(.*)(true|True|TRUE)' ${YML} | wc -l`
-  exit 0
-fi
+  echo "picku.value "`grep -E 'pickup(.*)(true|True|TRUE)' ${YML} | wc -l`
 
 
 
