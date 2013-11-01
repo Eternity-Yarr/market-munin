@@ -57,44 +57,30 @@ fi
 
 if [ "$1" = "config" ]; then
 	# The title of the graph
-	echo 'graph_title YML information'
+	echo 'graph_title YML information - Not available offers'
 	# Arguments to "rrdtool graph". In this case, tell it that the
 	# lower limit of the graph is '0', and that 1k=1000 (not 1024)
-	echo 'graph_args --base 1000 -A'
+	echo 'graph_args --base 1000 -A -l 0'
 	# The Y-axis label
 	echo 'graph_vlabel offers'
 	# Graph category
 	echo 'graph_category ecommerce'
   # Graph information
   echo 'graph_info This graph show some offers metrics'
-  echo 'total.info Total offers count'
-  echo 'avail.info Count of available for delivery/pickup offers'
-  echo 'picku.info Count of offers that is available for pickup'
+  echo 'notav.info Count of offers that is not available'
 
 
   # Labels is required subfield and used in the legend
-  echo 'total.label Total'
-  echo 'avail.label Available'
-  echo 'picku.label Pickup'
+  echo 'notav.label n/a'
 
   # Specify type. GAUGE type is default type, but we specify it anyway
-  echo 'total.type GAUGE'
-  echo 'avail.type GAUGE'
-  echo 'picku.type GAUGE'
+  echo 'notav.type GAUGE'
 
   # Thickness
-  echo 'total.draw LINE2'
   echo 'notav.draw LINE2'
 
-  
-
-  print_warning total
-  print_critical total
-  print_warning avail
-  print_critical avail
-  print_warning picku
-  print_critical picku
-
+  print_warning notav
+  print_critical notav
 
   # If run as 'config', we quit. No info diplayed.
   exit 0
@@ -103,13 +89,7 @@ fi
 
 # Actual work
 
-
-  echo "total.value "`grep -E '\<offer>' ${YML} | wc -l`
-
-  echo "avail.value "`grep -E 'offer(.*)available="(true|True|TRUE)' ${YML} | wc -l`
-
-  echo "picku.value "`grep -E 'pickup(.*)(true|True|TRUE)' ${YML} | wc -l`
-
+  echo "notav.value "`grep -E 'offer(.*)available="(false|False|FALSE)' ${YML} | wc -l`
 
 
 
