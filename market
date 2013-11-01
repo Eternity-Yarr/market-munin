@@ -1,0 +1,133 @@
+#!/bin/sh
+# -*- sh -*-
+
+: << =cut
+
+=head1 NAME
+
+market - plugin to graph some statistical info from YML-file for yandex.market
+
+=head1 APPLICABLE SYSTEMS
+
+Any system wich generates correct YML file
+
+=head1 CONFIGURATION
+
+The configuration variables are:
+
+ ymlfile - path to the yml file
+
+The default configuration is:
+
+ [market]
+   env.ymlfile /var/www/upload/market.xml
+
+=head1 AUTHOR
+
+# Copyright Dmitry V. <savraz@gmail.com>
+# Nov 01, 2013
+
+=head1 LICENSE
+
+Licensed under the CC0 1.0: http://creativecommons.org/publicdomain/zero/1.0/
+
+=head1 MAGIC MARKERS
+
+ #%# family=auto
+ #%# capabilities=autoconf
+
+=cut
+
+# Set the location of market YML file
+YML=${ymlfile:-/var/www/upload/market.xml}
+
+if [ "$1" = "autoconf" ]; then
+    if [ -r ${YML} ]; then 
+	echo yes
+	exit 0
+    else
+	echo no
+	exit 0
+    fi
+fi
+
+
+# If run with the "config"-parameter, give out information of how the
+# graphs should look.
+
+if [ "$1" = "config" ]; then
+	# The title of the graph
+	echo 'graph_title YML information'
+	# Arguments to "rrdtool graph". In this case, tell it that the
+	# lower limit of the graph is '0', and that 1k=1000 (not 1024)
+	echo 'graph_args --base 1000 -l 0'
+	# The Y-axis label
+	echo 'graph_vlabel offers'
+	# Graph category
+	echo 'graph_category ecommerce'
+  # Graph information
+  echo 'graph_info This graph show some offers metrics'
+  echo 'total.info Total offers count'
+  echo 'avail.info Count of available for delivery/pickup offers'
+  echo 'notav.info Count of offers that is not available'
+  echo 'picku.info Count of offers that is available for pickup'
+
+
+  # Labels is required subfield and used in the legend
+  echo 'total.label Total'
+  echo 'avail.label Available'
+  echo 'notav.label n/a'
+  echo 'picku.label Pickup'
+
+  # Specify type. GAUGE type is default type, but we specify it anyway
+  echo 'total.type GAUGE'
+  echo 'avail.type GAUGE'
+  echo 'notav.type GAUGE'
+  echo 'picku.type GAUGE'
+
+  
+
+  print_warning total
+  print_critical total
+  print_warning avail
+  print_critical avail
+  print_warning notav
+  print_critical notav
+  print_warning picku
+  print_critical picku
+
+
+  # If run as 'config', we quit. No info diplayed.
+  exit 0
+
+fi
+
+# Actual work
+
+if [ "$1" = "total" ]; then
+
+  echo "total.value "`grep -E '\<offer>' ${YML} | wc -l`
+  exit 0
+fi
+
+if [ "$1" = "avail" ]; then
+
+  echo "total.value "`grep -E 'offer(.*)available="(true|True|TRUE)' ${YML} | wc -l`
+  exit 0
+fi
+
+if [ "$1" = "notav" ]; then
+
+  echo "total.value "`grep -E 'offer(.*)available="(false|False|FALSE)' ${YML} | wc -l`
+  exit 0
+fi
+
+if [ "$1" = "picku" ]; then
+
+  echo "total.value "`grep -E 'pickup(.*)(true|True|TRUE)' ${YML} | wc -l`
+  exit 0
+fi
+
+
+
+
